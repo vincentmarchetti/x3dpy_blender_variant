@@ -1,0 +1,166 @@
+<?xml encoding="US-ASCII"?>
+
+<!ELEMENT 	XeenaProfile (colorscheme,icons)>
+<!ATTLIST 	XeenaProfile
+   base-path        CDATA      #IMPLIED
+   item-editor      (always-on-screen|dialog)  	"always-on-screen">
+
+<!ELEMENT 	DTDProfile   (defaults?, elements,  documents, palettes?, importers?, exporters?, tools?)>
+<!ATTLIST 	DTDProfile
+  title 	    CDATA	#REQUIRED
+  base-path 	CDATA	#IMPLIED>
+
+<!ELEMENT 	defaults EMPTY>
+<!ATTLIST 	defaults
+   systemLiteral    CDATA           	#IMPLIED
+   pubidLiteral     CDATA           	#IMPLIED
+   encoding         CDATA           	#IMPLIED>
+
+
+<!ELEMENT 	elements 	(element)*>
+
+<!ELEMENT 	element 	(attribute)*>
+<!ATTLIST 	element
+  name 		        ID 		            #REQUIRED
+  tooltip       	CDATA           	#IMPLIED
+  description      	CDATA           	#IMPLIED
+  icon          	CDATA           	#IMPLIED>
+
+<!ELEMENT 	attribute 	EMPTY>
+<!ATTLIST 	attribute
+  name 		NMTOKEN	#REQUIRED
+  tooltip 		CDATA 	#IMPLIED
+  description      CDATA           	#IMPLIED
+  editor (TextArea|TextField)     	"TextField">
+
+<!ELEMENT 	palettes ((toolbarpalette)*, (sidebarpalette)*) >
+
+<!ELEMENT 	toolbarpalette 	(group)+ >
+<!ATTLIST  	toolbarpalette
+  title    		CDATA      	#REQUIRED>
+
+<!ELEMENT 	sidebarpalette 	(group) >
+<!ATTLIST  	sidebarpalette
+  title    		CDATA           	#REQUIRED
+  all-visible 	(yes|no)	"no"
+  searchable 	(yes|no)	"no">
+
+<!ELEMENT  	group 		EMPTY>
+<!ATTLIST  	group
+  elements 	IDREFS 	#REQUIRED>
+
+<!ELEMENT 	documents 	(document)*>
+
+<!ELEMENT 	document 	EMPTY>
+<!ATTLIST 	document
+  template 	CDATA   	#IMPLIED
+  suffix 		NMTOKEN 	#IMPLIED
+  description 	CDATA   	#IMPLIED
+  root        	NMTOKEN	#REQUIRED>
+
+<!ELEMENT 	importers 	(importer)*>
+
+<!ELEMENT 	importer 	EMPTY>
+<!ATTLIST 	importer
+  class-name 	CDATA   	#REQUIRED
+  init-data     CDATA       #IMPLIED>
+
+<!ELEMENT 	exporters 	(exporter)*>
+
+<!ELEMENT 	exporter 	EMPTY>
+<!ATTLIST 	exporter
+  class-name 	CDATA   	#REQUIRED
+  init-data     CDATA       #IMPLIED>
+
+<!ELEMENT 	tools 	(tool)*>
+
+<!ELEMENT 	tool 	EMPTY>
+<!ATTLIST 	tool
+  class-name 	CDATA   	#REQUIRED
+  init-data     CDATA       #IMPLIED>
+
+
+<!ELEMENT	colorscheme     EMPTY>
+<!ATTLIST	colorscheme
+  desktop.background          	CDATA      #IMPLIED
+  palette.background 			CDATA      #IMPLIED
+  palette.foreground 			CDATA      #IMPLIED
+  document.background 		    CDATA      #IMPLIED
+  document.foreground 			CDATA      #IMPLIED
+  document.text.editable.foreground 	CDATA      #IMPLIED
+  document.warn.foreground      CDATA      #IMPLIED
+  window.base.background 		CDATA      #IMPLIED
+  window.base.foreground 		CDATA      #IMPLIED
+  window.messages.background 	CDATA      #IMPLIED
+  window.messages.foreground 	CDATA      #IMPLIED
+  dialog.background 			CDATA      #IMPLIED
+  dialog.foreground 			CDATA      #IMPLIED
+  dialog.warn.foreground 		CDATA      #IMPLIED
+  selected.background 			CDATA      #IMPLIED
+  selected.foreground 			CDATA      #IMPLIED
+  table.header.background 		CDATA      #IMPLIED
+  table.header.foreground 		CDATA      #IMPLIED>
+
+
+<!ELEMENT	icons     EMPTY>
+<!ATTLIST	icons
+  logo				 CDATA      #IMPLIED
+  home				 CDATA      #IMPLIED
+  back				 CDATA      #IMPLIED
+  forw				 CDATA      #IMPLIED
+  frame				 CDATA      #IMPLIED
+
+  xmlelement 			        CDATA      #IMPLIED
+  xmlelement.XML_PI 		    CDATA      #IMPLIED
+  xmlelement.XML_COMMENT	    CDATA      #IMPLIED
+  xmlelement.XML_TEXT	        CDATA      #IMPLIED
+  xmlelement.XML_CDATA	        CDATA      #IMPLIED
+  xmlelement.XML_DOCUMENT	    CDATA      #IMPLIED
+  xmlelement.XML_DOCUMENT_TYPE  CDATA      #IMPLIED
+
+  xmlattribute      CDATA      #IMPLIED
+
+  expand            CDATA      #IMPLIED
+  collapse			CDATA      #IMPLIED
+  editxml			CDATA      #IMPLIED
+  viewsrc			CDATA      #IMPLIED
+  printsrc			CDATA      #IMPLIED
+  printtree			CDATA      #IMPLIED
+  validate			CDATA      #IMPLIED
+  xsl			    CDATA      #IMPLIED
+
+
+  pasteafter        CDATA      #IMPLIED
+  pastebefore		CDATA      #IMPLIED
+  pasteaschild		CDATA      #IMPLIED
+  replace			CDATA      #IMPLIED
+  insertinstead		CDATA      #IMPLIED
+  insertbefore		CDATA      #IMPLIED
+  insertafter		CDATA      #IMPLIED
+  insertaschild		CDATA      #IMPLIED
+
+  add				CDATA      #IMPLIED
+  remove			CDATA      #IMPLIED
+
+  find			    CDATA      #IMPLIED
+  delete			CDATA      #IMPLIED
+  cut				CDATA      #IMPLIED
+  copy				CDATA      #IMPLIED
+  paste				CDATA      #IMPLIED
+  undo				CDATA      #IMPLIED
+  redo				CDATA      #IMPLIED
+
+  close				CDATA      #IMPLIED
+  exit				CDATA      #IMPLIED
+  new				CDATA      #IMPLIED
+  open				CDATA      #IMPLIED
+  openurl           CDATA      #IMPLIED
+  import			CDATA      #IMPLIED
+  save				CDATA      #IMPLIED
+  saveas			CDATA      #IMPLIED
+  saveall			CDATA      #IMPLIED
+  encoding			CDATA      #IMPLIED
+  doctype			CDATA      #IMPLIED
+
+  about				CDATA      #IMPLIED
+  helptopics		CDATA      #IMPLIED>
