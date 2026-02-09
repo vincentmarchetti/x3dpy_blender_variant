@@ -3011,6 +3011,13 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         <xsl:value-of select="InterfaceDefinition/@specificationUrl"/>
         <xsl:text>'
     @classmethod
+    def CONTAINERFIELD_DEFAULT(cls):
+        """ Default value for containerField attribute in XML encoding """
+        return '</xsl:text>
+        <xsl:value-of select="InterfaceDefinition/containerField/@default"/>
+        <xsl:text>'</xsl:text>
+        <xsl:text>
+    @classmethod
     def TOOLTIP_URL(cls):
         """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. </xsl:text>
         <xsl:text>https://www.web3d.org/x3d/tooltips/X3dTooltips.html#</xsl:text>
