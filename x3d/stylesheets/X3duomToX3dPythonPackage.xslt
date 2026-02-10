@@ -3895,7 +3895,8 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         <!-- XML() functions -->
         <xsl:text>
     # output function - - - - - - - - - -
-    def XML(self, indentLevel=0, syntax="XML"):
+    # VJM this is the XML function modified for containerField
+    def XML(self, indentLevel=0 , syntax="XML", containerField=None):
         """ Provide Canonical X3D output serialization using XML encoding (usable for .x3d file suffix). """
         result = ''
         indent = '  ' * indentLevel</xsl:text>
@@ -4014,6 +4015,9 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                 <xsl:value-of select="$elementName"/>
                 <xsl:text>'</xsl:text>
                 <!-- opening tag is unclosed since followed by attributes -->
+                <xsl:text>
+        if (containerField is not None and self.CONTAINERFIELD_DEFAULT() != '') and (self.CONTAINERFIELD_DEFAULT() != containerField):
+            result += " containerField='" + containerField + "'"</xsl:text>
                 <!-- output simple-type fields as XML attributes -->
                 <xsl:for-each select="$allFields[not(contains(@type,'Node')) and not(@name = 'sourceCode')]">
                     <xsl:sort select="@name[not(.='DEF') and not(.='USE')]" order="ascending"/>
@@ -4268,6 +4272,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                         # TODO check order of output: component unit meta
                         result += each.XML(indentLevel=indentLevel+1, syntax=syntax)</xsl:text>
                     </xsl:when>
+                    <!-- VJM here is where attributes that are SFNode,MFNode are sent out to XML encoding -->
                     <xsl:otherwise>
                         <xsl:for-each select="$allFields[contains(@type,'Node')]">
                             <xsl:sort select="(@type='MFNode')"/>
@@ -4301,6 +4306,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                         <xsl:text>: # output this SFNode
                 result += self.</xsl:text>
                         <xsl:value-of select="$fieldName"/>
+                        <!-- VJM Here is where it looks like an  SFNode attribute is encoded to XML -->
                         <xsl:text>.XML(indentLevel=indentLevel+1, syntax=syntax)</xsl:text>
                                     </xsl:when>
                                     <xsl:otherwise>
@@ -4319,9 +4325,11 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
             if self.</xsl:text>
                         <xsl:value-of select="$fieldName"/>
                         <xsl:text>: # walk each child in list, if any (avoid empty list recursion)
+                <!-- VJM Here is where it looks like an  a list is walked -->
                 for each in self.</xsl:text>
                         <xsl:value-of select="$fieldName"/>
                         <xsl:text>:
+                        <!-- VJM Here is where it looks like an  MFNode attribute is encoded to XML -->
                     result += each.XML(indentLevel=indentLevel+1, syntax=syntax)</xsl:text>
                                     </xsl:otherwise>
                                 </xsl:choose>
