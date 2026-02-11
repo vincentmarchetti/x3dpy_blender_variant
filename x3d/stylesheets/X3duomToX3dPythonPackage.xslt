@@ -2886,7 +2886,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
     </xsl:template>
 
     <!-- ===================================================== -->
-    
+    <!-- VJM the template that matches ConcreteNode -->
     <xsl:template match="*"> <!-- rule to process each ConcreteNode and Statement element -->
     
         <xsl:variable name="annotation">
@@ -4307,7 +4307,9 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                 result += self.</xsl:text>
                         <xsl:value-of select="$fieldName"/>
                         <!-- VJM Here is where it looks like an  SFNode attribute is encoded to XML -->
-                        <xsl:text>.XML(indentLevel=indentLevel+1, syntax=syntax)</xsl:text>
+                        <xsl:text>.XML(indentLevel=indentLevel+1, syntax=syntax, containerField='</xsl:text>
+                        <xsl:value-of select="$fieldName"/>
+                        <xsl:text>')</xsl:text>
                                     </xsl:when>
                                     <xsl:otherwise>
                         <!-- ## result += indent + '  ' + 'TODO iterate over each child element' + '\n' -->
@@ -4330,7 +4332,9 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                         <xsl:value-of select="$fieldName"/>
                         <xsl:text>:
                         <!-- VJM Here is where it looks like an  MFNode attribute is encoded to XML -->
-                    result += each.XML(indentLevel=indentLevel+1, syntax=syntax)</xsl:text>
+                    result += each.XML(indentLevel=indentLevel+1, syntax=syntax, containerField='</xsl:text>
+                        <xsl:value-of select="$fieldName"/>
+                        <xsl:text>')</xsl:text>
                                     </xsl:otherwise>
                                 </xsl:choose>
                             </xsl:if>
