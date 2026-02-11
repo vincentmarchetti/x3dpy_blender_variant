@@ -12,7 +12,7 @@ MODEL_BASENAME=simplified_hanim
 java -Djdk.xml.entityExpansionLimit=5000 \
      net.sf.saxon.Transform \
      -dtd:off \
-     -s:../$MODEL_BASENAME.x3d \
+     -s:../original/$MODEL_BASENAME.x3d \
      -xsl:./x3d/stylesheets/X3dToPython.xslt \
      -o:$TEMPFILE  && \
 # following sed operation will strip the diagnostic tests from the python code     
