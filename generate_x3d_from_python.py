@@ -1,34 +1,53 @@
+import argparse
+import subprocess
+import tempfile
+
+import os.path
+
+import sys
+
+
 import logging
 logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-import sys
+here = os.path.dirname(__file__)
 
+parser=argparse.ArgumentParser(
+    prog="generate_x3d_from_python"
+)
 
-INFILE="/Users/vmarchetti/Documents/SPRI/x3d_package_fix/build/simplified_hanim.py"
-OUTFILE="/Users/vmarchetti/Documents/SPRI/x3d_package_fix/build/simplified_hanim.x3d"
+parser.add_argument('infile')
+parser.add_argument('-o','--outfile')
 
-with open(INFILE,"r") as inp:
+args = parser.parse_args()
+
+with open(args.infile,"r") as inp:
     try:
         exec(inp.read())
     except Exception as exc:
-        logger.exception("error executing python encoding")
+        sys.stderr.write(f"error executing python encoding {str(exc)}\n")
         sys.exit(1)
     
 try:
     newModel
 except Exception as exc:
-    logger.exception("error referencing newModel")
+    sys.stderr.write(f"error referencing newModel {exc}\n")
     sys.exit(1)
+
+
+if args.outfile:
+    outp = open(args.outfile,"w")
+else:
+    outp = sys.devnull
     
-
-
-with open(OUTFILE,"w") as outp:
+with outp:
     try:
         outp.write( newModel.XML() )
     except Exception as exc:
-        logger.exception("error writing XML encoding")
+        sys.stderr.write(f"error writing XML encoding {exc.message()}\n")
         sys.exit(1)
         
-logger.debug(f"encoding written to {OUTFILE}")
+logger.info("generate_x3d_from_python completed")
+sys.exit(0)
