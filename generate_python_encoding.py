@@ -3,15 +3,15 @@ import argparse
 import subprocess
 import tempfile
 
-import os.path
+import os, os.path
 
-import sys
+import sys, io
 import logging
 logger = logging.getLogger()
 logger.addHandler(
     logging.StreamHandler(sys.stdout)
 );
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARN)
 
 here = os.path.dirname(__file__)
 
@@ -38,21 +38,30 @@ def run():
         ]
         logger.debug(f"commands: {' '.join(commands)}")
     
-        res = subprocess.run(   commands ,
-                                text=True) # text = True will allow capture of stderr
-        logger.info(f"java call returned with code {res.returncode}")
-        if (res.returncode != 0):
-            sys.stdout.write("XLT error: %s" % res.stderr )
-            sys.exit(1)
+        with tempfile.TemporaryFile(mode="w+") as errp:
+            res = subprocess.run(   commands ,
+                                    stderr = errp,
+                                    text=True) # text = True means stdout stderr streams
+                                               # handled as text
+            logger.info(f"java call returned with code {res.returncode}")
+            if (res.returncode != 0):
+                errp.seek(0)
+                sys.stderr.write("XSLT error: %s" % errp.read() )
+                sys.exit(1)
             
         # post processing
-        if args.outfile:
-            outp = open(args.outfile,'w')
-        else:
-            outp = os.devnull
-        with open(tempfilename,"r") as inp, outp:
-            for fline in sed_lines(inp):
-                outp.write(fline)
+        try:
+            if args.outfile:
+                outp = open(args.outfile,'w')
+            else:
+                outp = os.devnull
+            
+            with open(tempfilename,"r") as inp, outp:
+                for fline in sed_lines(inp):
+                    outp.write(fline)
+        except Exception as exc:
+            sys.stderr.write("postprocess error: %s" % str(exc))
+            sys.exit(1)
                 
         logger.info("completed")
         sys.exit(0)
