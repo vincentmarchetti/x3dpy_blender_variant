@@ -81,7 +81,6 @@ class RoundTripTest(unittest.TestCase):
         return f"stage {self.stage} file {os.path.basename(self.filepath)}"
         
     def tearDown(self ):
-        return
         for fd in self.temporary_directories:
             try:
                 shutil.rmtree(fd)
