@@ -28,25 +28,51 @@ import argparse
 import logging
 logging.basicConfig()
 logger = logging.getLogger()
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.WARN)
 
 parser=argparse.ArgumentParser(
     prog="generate_python_encoding"
 )
 
 
-parser.add_argument('-s','--samples')
+parser.add_argument('-s','--samples' ,help='text file of .x3d files, 1 filepath per line')
+parser.add_argument('--omit-errorlist', action='store_true', 
+                    dest="omit_errorlist",
+                    help='suppress printing of error details')
+
+# Developer Note: the python-path argument can be used to resolve to a x3d.py that is not the local build
+parser.add_argument('-p', '--python-path', 
+                    dest="python_path",
+                    help='addition to search path to locate x3d module')
 
 args = parser.parse_args()
+    
+if args.python_path:
+    x3d_container = args.python_path
+else:
+    # use the local build of x3d package
+    x3d_container = os.path.join(
+                        os.path.dirname(__file__),
+                        "../build"
+                    )
+# to avoid getting fooled by Python finding another x3d package somewhere
+# we require that x3d_container has a x3d folder with an x3d/__init__.py file
+# following function returns True if such an x3d/__init__.py is found
+def test_x3d_package( container ):
+    fp = os.path.join(container,"x3d/__init__.py")
+    return os.path.isfile(fp)
 
-# put the local build of x3d package into sys.path
-x3d_container = os.path.join(
-    os.path.dirname(__file__),
-    "../build"
-)
-sys.path.insert(0, x3d_container )
+if not test_x3d_package(x3d_container):
+    message = f"container {x3d_container} does not contain x3d/__init__.py"
+    raise ValueError(message)
+
+logger.info(f"x3d_container: {x3d_container}")
+
 
 class RoundTripTest(unittest.TestCase):
+
+    # add the x3d_container value from module scope as a class member
+    python_path = x3d_container
 
     def __init__(self, filepath, stage ):
         """
@@ -62,6 +88,14 @@ class RoundTripTest(unittest.TestCase):
         unittest.TestCase.__init__(self)
     
     @property
+    def test_environ(self):
+        # returns the a mapping with the current environment values
+        # modified by defining PYTHONPATH
+        retVal = dict( os.environ )
+        retVal["PYTHONPATH"] = self.python_path
+        return retVal
+        
+    @property
     def scripts_folder(self):
         """
         the location of the python wrapper scripts
@@ -72,13 +106,28 @@ class RoundTripTest(unittest.TestCase):
         tempdir = tempfile.mkdtemp()
         pyBase = os.path.splitext( os.path.basename(self.filepath))[0] + ".py"
         self.python_encoding = os.path.join(tempdir, pyBase)
+        
+        x3dBase = os.path.basename(self.filepath)
+        self.x3d_encoding = os.path.join(tempdir, x3dBase)
+        
         self.temporary_directories.append(tempdir)
         logger.debug(f"python encoding: {self.python_encoding}")
         if (self.stage == 1):
             return
+        else:
+            code, errp = self.execute_stage_1()
+            logger.info("setUp: %s" % ((code, errp),))
+            if (code != 0):
+                self.skipTest("no python encoding")
+            return
       
     def shortDescription(self):
-        return f"stage {self.stage} file {os.path.basename(self.filepath)}"
+        prefix = {
+            1:"xml -> python",
+            2:"python -> xml",
+        }
+        file_root, _ = os.path.splitext( os.path.basename(self.filepath))
+        return f"{prefix[self.stage]} for {file_root}"
         
     def tearDown(self ):
         for fd in self.temporary_directories:
@@ -89,7 +138,8 @@ class RoundTripTest(unittest.TestCase):
         
     def runTest(self):
         testfunc = {
-            1:self.execute_stage_1
+            1:self.execute_stage_1,
+            2:self.execute_stage_2
         }[self.stage]
         code, error_message = testfunc()
         
@@ -134,6 +184,7 @@ class RoundTripTest(unittest.TestCase):
         with tempfile.TemporaryFile(mode="w+") as errp:
             res = subprocess.run(   commands,
                                     stdout= subprocess.DEVNULL,
+                                    env=self.test_environ,
                                     stderr= errp,
                                     text=True)
                                     
@@ -142,13 +193,46 @@ class RoundTripTest(unittest.TestCase):
                 return (res.returncode, errp.read() )        
         return (0,None)
 
+    def execute_stage_2(self):
+        """
+        run the generate_python_encoding script is a separate process
+        return a 2-tuple of returnCode, error_message
+        error_message a string if returnCode != 0
+        """
+        generate_script_path = os.path.join(self.scripts_folder,"generate_x3d_from_python.py")
+        
+        commands = [
+            'python',
+            generate_script_path,
+            '--outfile', self.x3d_encoding,
+            self.python_encoding            
+        ]
+        with tempfile.TemporaryFile(mode="w+") as errp:
+            res = subprocess.run(   commands,
+                                    env=self.test_environ,
+                                    stdout= subprocess.DEVNULL,
+                                    stderr= errp,
+                                    text=True)
+                                    
+            if res.returncode != 0:
+                errp.seek(0)
+                return (res.returncode, errp.read() )
+        return (0,None)
+
 class TextTestResult(unittest.TextTestResult):
+
+    # set a class member based on the module level args option
+    show_errors = not args.omit_errorlist
+
     def getDescription(self, test):
         return test.shortDescription()
     
+    
     def printErrors(self):
-        showErrors = False
-        if showErrors:
+        # this is an override of unittest.TextTestResult.printErrord
+        # that always shows errors.
+
+        if self.show_errors:
             unittest.TextTestResult.printErrors(self)
 
 class TextTestRunner(unittest.TextTestRunner):
@@ -159,8 +243,9 @@ suite = unittest.TestSuite()
 if args.samples:
     with open(args.samples,"r") as inp:
         for line in list(inp):  
-            fpath = line.strip()         
-            suite.addTest( RoundTripTest(fpath,1))
+            fpath = line.strip() 
+            suite.addTest( RoundTripTest(fpath,1))        
+            suite.addTest( RoundTripTest(fpath,2))
  
 if __name__ == '__main__'  :
     TextTestRunner(verbosity=2).run(suite)
