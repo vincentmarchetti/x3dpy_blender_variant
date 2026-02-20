@@ -46,7 +46,7 @@ with outp:
     try:
         outp.write( newModel.XML() )
     except Exception as exc:
-        sys.stderr.write(f"error writing XML encoding {exc.message()}\n")
+        sys.stderr.write(f"error writing XML encoding {str(exc)}\n")
         sys.exit(1)
         
 logger.info("generate_x3d_from_python completed")
