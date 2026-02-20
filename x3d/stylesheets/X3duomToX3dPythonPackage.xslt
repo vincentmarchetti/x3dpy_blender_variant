@@ -675,8 +675,12 @@ class Comment(_X3DStatement):
             value = SFString.DEFAULT_VALUE()
         self.__value = str(value)
     # output function - - - - - - - - - -
-    def XML(self, indentLevel=0, syntax="XML"):
-        """ <!-- XML comments are wrapped in special delimiters --> """
+    def XML(self, indentLevel=0, syntax="XML", containerField=None):
+        """ <!-- XML comments are wrapped in special delimiters -->
+            The containerField attribute is added for compatibility
+            when this comment is being emitted to XML as part of an MFNode
+            value. The value of containerField is ignored in emitted XML
+            fragment """
         result = ''
         indent = '  ' * indentLevel
         if self.value:
