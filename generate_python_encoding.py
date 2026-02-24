@@ -11,7 +11,7 @@ logger = logging.getLogger()
 logger.addHandler(
     logging.StreamHandler(sys.stdout)
 );
-logger.setLevel(logging.WARN)
+logger.setLevel(logging.INFO)
 
 here = os.path.dirname(__file__)
 
@@ -63,7 +63,7 @@ def run():
             sys.stderr.write("postprocess error: %s" % str(exc))
             sys.exit(1)
                 
-        logger.info("completed")
+        logger.info("completed generating python encoding")
         sys.exit(0)
 
 # re and sed_line generator intended to remove the
@@ -80,5 +80,6 @@ def sed_lines(inp):
         else:
             yield fline
 run()
+
         
 
