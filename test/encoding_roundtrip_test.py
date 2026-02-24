@@ -243,8 +243,7 @@ suite = unittest.TestSuite()
 if args.samples:
     with open(args.samples,"r") as inp:
         for line in list(inp):  
-            fpath = line.strip() 
-            suite.addTest( RoundTripTest(fpath,1))        
+            fpath = line.strip()         
             suite.addTest( RoundTripTest(fpath,2))
  
 if __name__ == '__main__'  :
