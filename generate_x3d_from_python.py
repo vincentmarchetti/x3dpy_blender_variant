@@ -12,7 +12,20 @@ logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-here = os.path.dirname(__file__)
+
+# look for the x3d package in the local build directory
+x3d_container = os.path.join( os.path.dirname(__file__),"build")
+
+def test_x3d_package( container ):
+    fp = os.path.join(container,"x3d/__init__.py")
+    return os.path.isfile(fp)
+
+if not test_x3d_package(x3d_container):
+    message = f"container {x3d_container} does not contain x3d/__init__.py"
+    logger.error(message)
+    sys.exit(1)
+
+sys.path.insert(0, x3d_container)
 
 parser=argparse.ArgumentParser(
     prog="generate_x3d_from_python"
