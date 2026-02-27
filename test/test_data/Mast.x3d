@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "https://www.web3d.org/specifications/x3d-3.0.dtd">
+<X3D profile='Immersive' version='3.0' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='https://www.web3d.org/specifications/x3d-3.0.xsd'>
+  <head>
+    <meta content='Mast.x3d' name='title'/>
+    <meta content='Ozan Apaydin' name='creator'/>
+    <meta content='7 September 2001' name='created'/>
+    <meta content='20 October 2019' name='modified'/>
+    <meta content='Mast of a Yavuz Class Frigate' name='description'/>
+    <meta content='https://www.web3d.org/x3d/content/examples/Savage/ShipsMilitary/DestroyerSovremennyRussia/AntennaMast.x3d' name='reference'/>
+    <meta content='https://www.web3d.org/x3d/content/examples/Savage/ShipsMilitary/FrigateYavuzTurkey/Mast.x3d' name='identifier'/>
+    <meta content='X3D-Edit 3.2, https://www.web3d.org/x3d/tools/X3D-Edit' name='generator'/>
+    <meta content='../../license.html' name='license'/>
+  </head>
+  <Scene>
+    <WorldInfo title='Mast.x3d'/>
+    <Viewpoint description='Antenna Mast' orientation='0 1 0 0.79' position='18 7 18'/>
+    <Background skyColor='0.8 0.8 1'/>
+    <!-- Radar Mast Structure -->
+    <Group DEF='HalfMastStructure'>
+      <Transform rotation='-1 0 0 0.16' translation='0 0 2'>
+        <Group DEF='FrontSide'>
+          <Transform rotation='0 0 1 1.57' translation='0 .05 0'>
+            <Shape>
+              <Cylinder height='4' radius='.1'/>
+              <Appearance DEF='Black'>
+                <Material diffuseColor='0.2 0.2 0.2'/>
+              </Appearance>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 -.1644' translation='-1 6 0'>
+            <Shape>
+              <Cylinder height='12.166' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 .1644' translation='1 6 0'>
+            <Shape>
+              <Cylinder height='12.166' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 .8614' translation='.2 1.5 0'>
+            <Shape>
+              <Cylinder height='4.61' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 -.8614' translation='-.2 1.5 0'>
+            <Shape>
+              <Cylinder height='4.61' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 .6939' translation='.2 4.5 0'>
+            <Shape>
+              <Cylinder height='3.905' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 -.6939' translation='-.2 4.5 0'>
+            <Shape>
+              <Cylinder height='3.905' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 .4629' translation='.25 7.5 0'>
+            <Shape>
+              <Cylinder height='3.354' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 -.4629' translation='-.25 7.5 0'>
+            <Shape>
+              <Cylinder height='3.354' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 1.57' translation='0 9 0'>
+            <Shape>
+              <Cylinder height='1' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 1.57' translation='0 6 0'>
+            <Shape>
+              <Cylinder radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform rotation='0 0 1 1.57' translation='0 3 0'>
+            <Shape>
+              <Cylinder height='3' radius='.1'/>
+              <Appearance USE='Black'/>
+            </Shape>
+          </Transform>
+          <Transform translation='0 1.67 0'>
+            <Shape>
+              <Appearance USE='Black'/>
+              <Box size='.45 .45 .17'/>
+            </Shape>
+          </Transform>
+          <Transform translation='0 4.78 0'>
+            <Shape>
+              <Appearance USE='Black'/>
+              <Box size='.45 .45 .17'/>
+            </Shape>
+          </Transform>
+          <Transform translation='0 8 0'>
+            <Shape>
+              <Appearance USE='Black'/>
+              <Box size='.45 .45 .17'/>
+            </Shape>
+          </Transform>
+        </Group>
+      </Transform>
+      <Transform rotation='1 0 0 0.16' translation='0 0 -2'>
+        <Group USE='FrontSide'/>
+      </Transform>
+    </Group>
+    <Transform rotation='0 1 0 1.57'>
+      <Group USE='HalfMastStructure'/>
+    </Transform>
+    <Transform translation='0 13 0'>
+      <Shape>
+        <Appearance USE='Black'/>
+        <Cylinder height='2.5' radius='.13'/>
+      </Shape>
+    </Transform>
+    <Transform translation='0 12.5 0'>
+      <Shape>
+        <Appearance USE='Black'/>
+        <Cylinder height='2.5' radius='.25'/>
+      </Shape>
+    </Transform>
+    <Transform DEF='NavigationAntennaTr' rotation='0 1 0 1.57' translation='0 14.4 0'>
+      <Shape>
+        <Appearance USE='Black'/>
+        <Box size='3.2 .5 .7'/>
+      </Shape>
+      <OrientationInterpolator DEF='RotateAntenna' key='0 1 2' keyValue='0 1 0 0 0 1 0 3.14 0 1 0 6.28'/>
+      <TimeSensor DEF='AntennaTimer' cycleInterval='3.0' loop='true'/>
+    </Transform>
+    <Transform rotation='0 0 1 1.57' translation='.7 11.8 0'>
+      <Shape>
+        <Appearance USE='Black'/>
+        <Cylinder height='1.5' radius='.1'/>
+      </Shape>
+    </Transform>
+    <Transform translation='1.395 12.095 0'>
+      <Shape>
+        <Appearance USE='Black'/>
+        <Cylinder height='.6' radius='.1'/>
+      </Shape>
+    </Transform>
+    <Transform translation='1.395 12.59 0'>
+      <Shape>
+        <Appearance USE='Black'/>
+        <Cylinder height='.5' radius='.5'/>
+      </Shape>
+    </Transform>
+    <ROUTE fromField='fraction_changed' fromNode='AntennaTimer' toField='set_fraction' toNode='RotateAntenna'/>
+    <ROUTE fromField='value_changed' fromNode='RotateAntenna' toField='set_rotation' toNode='NavigationAntennaTr'/>
+    <Transform translation='-2.1 14.5 0'>
+      <Shape>
+        <Appearance USE='Black'/>
+        <Cylinder height='3.2' radius='.125'/>
+      </Shape>
+    </Transform>
+    <Transform rotation='0 0 1 1.57' translation='-1.2 13 0'>
+      <Shape>
+        <Appearance USE='Black'/>
+        <Cylinder radius='.125'/>
+      </Shape>
+    </Transform>
+  </Scene>
+</X3D>
