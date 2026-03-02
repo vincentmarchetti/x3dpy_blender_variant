@@ -2938,46 +2938,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
             </xsl:otherwise>
         </xsl:choose>
         
-        <!-- Python docstring -->
-            <xsl:text>
-    """
-    </xsl:text>
-    
-        <xsl:variable name="tooltipText"><!-- /attribute[@name = $fieldName] -->
-            <xsl:value-of select="$x3d.tooltips.document//element[@name = $elementName]/@tooltip" disable-output-escaping="yes"/>
-        </xsl:variable>
-        <xsl:variable name="fieldTooltip">
-            <xsl:if test="(string-length(normalize-space($tooltipText)) > 0)"><!-- doc-available($x3d.tooltips.path) -->
-                <xsl:value-of select="replace(replace($tooltipText,'&#8734;','infinity'),'&#960;','pi')" disable-output-escaping="yes"/>
-                <!-- consistent javadoc punctuation -->
-                <xsl:if test="not(ends-with(normalize-space($tooltipText),'.')) and not(contains($tooltipText,'http')) and not(contains($tooltipText,'mailto')) and not(contains($tooltipText,'ftp'))">
-                    <xsl:text>.</xsl:text>
-                </xsl:if>
-            </xsl:if>
-        </xsl:variable>
 
-        <xsl:choose>
-            <xsl:when test="(string-length(normalize-space($annotation)) > 0)">
-                <xsl:value-of select="$annotation"/>
-            </xsl:when>
-            <xsl:when test="(string-length(normalize-space($fieldTooltip)) > 0)">
-                <xsl:value-of select="substring-before($fieldTooltip,'.')"/>
-                <xsl:text>.</xsl:text>
-                <xsl:message>
-                    <xsl:text>*** Warning: annotation not found in X3DUOM, used tooltip as docstring for </xsl:text>
-                    <xsl:value-of select="$elementName"/>
-                </xsl:message>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:text>X3D element</xsl:text>
-                <xsl:message>
-                    <xsl:text>*** Warning: no annotation or tooltip found for </xsl:text>
-                    <xsl:value-of select="$elementName"/>
-                </xsl:message>
-            </xsl:otherwise>
-        </xsl:choose>
-            <xsl:text>
-    """</xsl:text>
 
         <xsl:text>
     # immutable constant functions have getter but no setter - - - - - - - - - -
