@@ -205,30 +205,20 @@ except:
 
         <!-- process elements -->
         
-        <xsl:text>###############################################
+        <xsl:text>
 
 # x3d.py X3D Package for Python
-
 # generator:  X3duomToX3dPythonPackage.xslt
 # X3DUOM:     X3dUnifiedObjectModel-</xsl:text><xsl:value-of select="X3dUnifiedObjectModel/@version"/><xsl:text>.xml
-# Python X3D: https://www.web3d.org/x3d/stylesheets/python/python.html
-"""
-The x3d.py Python X3D Package supports programmers with Python interfaces and objects for standards-based X3D programming, all as open source.
-
-This work is part of the X3D Python Scene Access Interface Library (X3DPSAIL).
-"""
-
-# Include regular expression (regex) library: re is built into Python
-# https://docs.python.org/3/library/re.html
-# https://docs.python.org/3/howto/regex.html#regex-howto
-# https://www.web3d.org/specifications/X3dRegularExpressions.html
 
 import re
 
+import logging
+logger=logging.getLogger("")
+logger.addHandler( new logging.NullHandler())
+logger.setLevel(logging.INFO)
+
 _DEBUG = False       # options True False
-
-###############################################
-
 # SimpleType Enumerations
 </xsl:text>
 
@@ -711,7 +701,7 @@ def isComment(value):
 
 ]]></xsl:text>
         <xsl:apply-templates select="//Statements/*"/>
-        <xsl:text>###############################################
+        <xsl:text>
 
 # Concrete Nodes
 
@@ -723,21 +713,17 @@ def isX3DNode(value):
 
 </xsl:text>
         <xsl:apply-templates select="//ConcreteNodes/*"/>
-        <xsl:text>###############################################
-
-# Exceptions
+        <xsl:text>
+        
 </xsl:text>
         <xsl:call-template name="Exceptions"/>
-        <xsl:text>###############################################
-
-# Python x3d Package Loading Complete
+        <xsl:text>
 
 # TODO how to introspect the version number at run time from the object. Specifically,
 # get the magic dictionary __dict__ and then perform standard dictionary lookups on that version key.
 
-print("x3d.py package 4.0.65.0 loaded, have fun with X3D Graphics!", flush=True)
+logger.info("x3d.py package 4.0.65.0 loaded, have fun with X3D Graphics!", flush=True)
 
-###############################################
 </xsl:text>
 <!-- TODO put version in x3d.py from pyproject.toml -->
 
