@@ -40,24 +40,7 @@
     
         <xsl:result-document href="{$X3dPackageDirectory}/__init__.py" method="text" omit-xml-declaration="yes" encoding="UTF-8" indent="no">
         
-            <xsl:text># __init__.py needed for properly configuring pypi distribution of x3d.py package
-
-# According to _Learning Python_ by Mark Lutz, fifth edition:
-# - Empty __init__.py no longer required as of Python 3.3.  p. 761
-# - Using __init__.py is performance advantage for loading, even when empty.  p. 761
-# - Using __all__ list to define exported values for import * is allowed but not required.  p. 735 and 771-772.
-
-# 6.4.1. Importing * From a Package
-# https://docs.python.org/3/tutorial/modules.html#importing-from-a-package
-
-# indicates that
-#     from packagename import *
-# "then imports whatever names are defined in the package" and
-# "Although certain modules are designed to export only names that follow certain patterns when you use import *,
-#     it is still considered bad practice in production code."
-
-# TODO testing continues to fix x3d.py package's class visibility satisfactorily for end users
-
+<xsl:text>
 __all__ = [</xsl:text>
             <xsl:text>
     # Field types
@@ -153,53 +136,26 @@ __all__ = [</xsl:text>
             <xsl:text>&#10;</xsl:text>
             <xsl:text>
     ]
-                
-# Zen of Python: Flat is better than nested.
-# https://en.wikipedia.org/wiki/Zen_of_Python
+ 
+import sys
+import logging
+logger = logging.getLogger("init")               
+logger.addHandler(logging.NullHandler())
+logger.addHandler(logging.StreamHandler(sys.stderr))
+logger.setLevel(logging.INFO)
 
-# Note insertion of period in following incantation for relative import, thanks Vince!
-# https://docs.python.org/3/reference/import.html
-# https://docs.python.org/3/reference/import.html#package-relative-imports
-                
-import re
-""" built-in Python regular expressions library """
-
-#print('====================================', flush=True)
-#print('PyPI x3d package __init__.py diagnostics', flush=True)
 try:
-    from x3d.x3d import *
-#   print('*** __init__.py successful invocation: from x3d.x3d import *', flush=True)
-except:
-#   print('*** __init__.py invocation failure: from x3d.x3d import *', flush=True)
-    try:
-        from .x3d import *
-    #   print('*** __init__.py successful invocation: from .x3d import *', flush=True)
-    except:
-    #   print('*** __init__.py invocation failure: from .x3d import *', flush=True)
-        try:
-            from x3d import *
-        #   print('*** __init__.py successful invocation: from x3d import *', flush=True)
-        except:
-        #   print('*** __init__.py invocation failure: from x3d import *', flush=True)
-            try:
-                from src.x3d import *
-            #   print('*** __init__.py successful invocation: from src.x3d import *', flush=True)
-            except:
-            #   print('*** __init__.py invocation failure: from src.x3d import *', flush=True)
-                try:
-                    from src.x3d.x3d import *
-                #   print('*** __init__.py successful invocation: from src.x3d.x3d import *', flush=True)
-                except:
-                #   print('*** __init__.py invocation failure: from src.x3d.x3d import *', flush=True)
-                    print('*** __init__.py invocation failure: unable to perform variations of "from x3d import *"', flush=True)
-
-#print('====================================', flush=True)
+    from ._x3dgen_ import *
+except Exception as exc:
+    msg = f"error raised importing _x3dgen_: {str(exc)}"
+    logger.error(msg)
+    raise
 
 </xsl:text>
             
         </xsl:result-document>
     
-        <xsl:result-document href="{$X3dPackageDirectory}/x3d.py" method="text" omit-xml-declaration="yes" encoding="UTF-8" indent="no">
+        <xsl:result-document href="{$X3dPackageDirectory}/_x3dgen_.py" method="text" omit-xml-declaration="yes" encoding="UTF-8" indent="no">
         
 	 <xsl:text disable-output-escaping="yes"><![CDATA[]]></xsl:text>
 
@@ -215,8 +171,7 @@ import re
 
 import logging
 logger=logging.getLogger("")
-logger.addHandler( new logging.NullHandler())
-logger.setLevel(logging.INFO)
+
 
 _DEBUG = False       # options True False
 # SimpleType Enumerations
@@ -272,10 +227,10 @@ def </xsl:text><xsl:value-of select="$assertFunctionName"/><xsl:text>(fieldName,
     if  not value:
         return True # no failure on empty defaults
     if str(MFString(value).XML()) in </xsl:text><xsl:value-of select="upper-case(@name)"/><xsl:text>:
-        # print('*** </xsl:text><xsl:value-of select="$assertFunctionName"/><xsl:text> ' + fieldName + ' str(MFString(' + str(value) + ').XML())=' + str(MFString(value).XML()), flush=True) # diagnostic
+        # print('*** </xsl:text><xsl:value-of select="$assertFunctionName"/><xsl:text> ' + fieldName + ' str(MFString(' + str(value) + ').XML())=' + str(MFString(value).XML()) # diagnostic
         return True
     if isinstance(value, (SFString, str)) and str(SFString(value).XML()) in </xsl:text><xsl:value-of select="upper-case(@name)"/><xsl:text>:
-        # print('*** </xsl:text><xsl:value-of select="$assertFunctionName"/><xsl:text> ' + fieldName + ' str(SFString(' + str(value) + ').XML())=' + str(MFString(value).XML()), flush=True) # diagnostic
+        # print('*** </xsl:text><xsl:value-of select="$assertFunctionName"/><xsl:text> ' + fieldName + ' str(SFString(' + str(value) + ').XML())=' + str(MFString(value).XML()) # diagnostic
         return True
     raise X3DTypeError(fieldName + ' value=\'' + MFString(value).XML() + '\' does not match allowed enumerations in </xsl:text><xsl:value-of select="upper-case(@name)"/><xsl:text>=' + str(</xsl:text><xsl:value-of select="upper-case(@name)"/><xsl:text>))</xsl:text>
             </xsl:if>
@@ -347,7 +302,7 @@ class _X3DField:
         """ Provide value of this field type. """
         return self.__value
     def __repl__(self):
-        # if _DEBUG: print('...DEBUG... type(self.value)=' + str(type(self.value)), flush=True)
+        # if _DEBUG: print('...DEBUG... type(self.value)=' + str(type(self.value))
         if isinstance(self.value, (SFString, str)):
             return "'" + self.value + "'"
         if  isinstance(self.value, tuple) and 'SF' in str(type(self)): # avoid X3DTypeError if value is not iterable
@@ -355,7 +310,7 @@ class _X3DField:
             if self.value: # walk each child in list, if any (avoid empty list recursion)
                 for each in self.value:
                     result += str(each) + ', '
-                    # if _DEBUG: print('...DEBUG... _X3DField debug: str(each)=' + str(each), flush=True)
+                    # if _DEBUG: print('...DEBUG... _X3DField debug: str(each)=' + str(each)
             return result.rstrip(', ') + ')'
         if  isinstance(self.value, list) and 'MF' in str(type(self)): # avoid X3DTypeError if value is not iterable
             # isinstance(self.value, MFNode): not working, what got passed in was not an MFNode object apparently
@@ -363,7 +318,7 @@ class _X3DField:
             if self.value: # walk each child in list, if any (avoid empty list recursion)
                 for each in self.value:
                     result += str(each) + ', '
-                    # if _DEBUG: print('...DEBUG... _X3DField debug: str(each)=' + str(each), flush=True)
+                    # if _DEBUG: print('...DEBUG... _X3DField debug: str(each)=' + str(each)
             return result.rstrip(', ') + ']'
         return str(self.value)
     def __str__(self):
@@ -542,7 +497,7 @@ class _X3DStatement:
         self.class_ = class_
         self.id_ = id_
         self.style_ = style_
-        # if _DEBUG: print('...DEBUG... in X3DNode __init__(' + str(class_) + ',' + str(id_) + ',' + str(style_) + ',' + ')', flush=True)
+        # if _DEBUG: print('...DEBUG... in X3DNode __init__(' + str(class_) + ',' + str(id_) + ',' + str(style_) + ',' + ')'
     @property # getter - - - - - - - - - -
     def class_(self):
         """ Space-separated list of classes, reserved for use by Cascading Stylesheets (CSS). Appended underscore to field name to avoid naming collision with Python reserved word. """
@@ -585,13 +540,13 @@ class _X3DStatement:
                 type_ = each[2]
                 accessType = each[3]
                 value = getattr(self, name)
-                # if _DEBUG: print('gettattr(self, ' + str(name) + ') value="' + str(value)[:100] + '" for FIELD_DECLARATIONS() ' + str(each) + ')', flush=True)
+                # if _DEBUG: print('gettattr(self, ' + str(name) + ') value="' + str(value)[:100] + '" for FIELD_DECLARATIONS() ' + str(each) + ')'
                 if value != default:
                     if  isinstance(value, list): # avoid X3DTypeError if value is not iterable
                         result += str(name) + '=['
                         for each in value:
                             result += str(each) + ', '
-                            # if _DEBUG: print('...DEBUG... _X3DStatement debug: str(each)=' + str(each), flush=True)
+                            # if _DEBUG: print('...DEBUG... _X3DStatement debug: str(each)=' + str(each)
                         result = result.rstrip(', ')
                         result += '],'
                     elif isinstance(value, str) and "'" in value:
@@ -722,7 +677,7 @@ def isX3DNode(value):
 # TODO how to introspect the version number at run time from the object. Specifically,
 # get the magic dictionary __dict__ and then perform standard dictionary lookups on that version key.
 
-logger.info("x3d.py package 4.0.65.0 loaded, have fun with X3D Graphics!", flush=True)
+logger.info("x3d.py package 4.0.65.0 loaded, have fun with X3D Graphics!")
 
 </xsl:text>
 <!-- TODO put version in x3d.py from pyproject.toml -->
@@ -748,7 +703,7 @@ def metaDiagnostics(self, headElement=None):
         headElement = self
     if  isinstance(headElement, X3D):
         headElement = headElement.head
-    # print('type(headElement)=' + str(type(headElement)), flush=True) # diagnostic
+    # print('type(headElement)=' + str(type(headElement)) # diagnostic
     if  isinstance(headElement, head):
         result = "meta information, "
         for each in headElement.children:
@@ -819,7 +774,7 @@ def fixBoolean(value, default=None):
     """
     Utility function to convert boolean to corresponding Python value.
     """
-    # if _DEBUG: print('fixBoolean(value=' + str(value) + ', type=' + str(type(value)) + ', default=' + str(default) + ')', flush=True)
+    # if _DEBUG: print('fixBoolean(value=' + str(value) + ', type=' + str(type(value)) + ', default=' + str(default) + ')'
     if  value is None:
         # if _DEBUG: print('...DEBUG... fixBoolean set value to default=' + str(default))
         return default
@@ -832,7 +787,7 @@ def fixBoolean(value, default=None):
         return value
 #   print('fixBoolean #1') # debug
     if isinstance(value, list) and len(value) == 1:
-        # if _DEBUG: print('fixBoolean downcasting by resetting singleton list value=' + str(value) + ' as value=' + str(value[0]), flush=True)
+        # if _DEBUG: print('fixBoolean downcasting by resetting singleton list value=' + str(value) + ' as value=' + str(value[0])
         return value[0] # dereference
     if isinstance(value, SFBool):
         return value.value # dereference
@@ -860,14 +815,14 @@ def fixBoolean(value, default=None):
             elif each in ('false', 'False'):
                 result[index] = False
             while isinstance(each, list) and len(each) == 1:
-                # if _DEBUG: print('fixBoolean downcasting by extracting singleton list value[' + str(index) + ']=' + str(each) + ' as each[0]=' + str(each[0]), flush=True)
+                # if _DEBUG: print('fixBoolean downcasting by extracting singleton list value[' + str(index) + ']=' + str(each) + ' as each[0]=' + str(each[0])
                 result[index] = each[0]
-#           print('fixBoolean #4c found each=' + str(each), 'result=' + str(result), flush=True) # debug
+#           print('fixBoolean #4c found each=' + str(each), 'result=' + str(result) # debug
             if not isinstance(result[index], bool):
                 # print(flush=True)
                 raise X3DTypeError('fixBoolean(value=' + str(value) + ') MFBool value[' + str(index) + ']=' + str(each) + ', result[' + str(index) + ']=' + str(result[index]) + ' with type=' + str(type(value)) + ' is not a valid Python bool expression')
             index += 1
-        # if _DEBUG: print('...DEBUG...fixBoolean result=' + str(result), flush=True)
+        # if _DEBUG: print('...DEBUG...fixBoolean result=' + str(result)
         return result
 #   print('fixBoolean #5, unhandled case: value=' + str(value), ' length=' + str(len(value))) # debug
     print(flush=True)
@@ -898,7 +853,7 @@ def assertPositive(fieldName, value):
     """
     Utility function to raise X3DTypeError if not isPositive(value).
     """
-    # if _DEBUG: print('...DEBUG... assertPositive(' + str(fieldName) + ', ' + str(value) + ')', flush=True)
+    # if _DEBUG: print('...DEBUG... assertPositive(' + str(fieldName) + ', ' + str(value) + ')'
     assert isPositive(value), str(fieldName) + '=' + str(value) + ' fails assertPositive requirements: value(s) must be greater than or equal to zero'
 
 def isNonNegative(value):
@@ -914,7 +869,7 @@ def isNonNegative(value):
                     return False
         return True
     if isinstance(value, (list, tuple)):
-        # if _DEBUG: print('isNonNegative: ', value, flush=True)
+        # if _DEBUG: print('isNonNegative: ', value
         for each in value:
             if each < 0:
                 return False
@@ -927,14 +882,14 @@ def assertNonNegative(fieldName, value):
     """
     Utility function to raise X3DTypeError if not isNonNegative(value).
     """
-    # if _DEBUG: print('...DEBUG... assertNonNegative(' + str(fieldName) + ', ' + str(value) + ')', flush=True)
+    # if _DEBUG: print('...DEBUG... assertNonNegative(' + str(fieldName) + ', ' + str(value) + ')'
     assert isNonNegative(value), str(fieldName) + '=' + str(value) + ' fails assertNonNegative requirements: value(s) must be greater than or equal to zero'
 
 def isZeroToOne(value):
     """
     Utility function to confirm value(s) in range [0..1]
     """
-    # if _DEBUG: print('...DEBUG... isZeroToOne(' + str(value) + ')', flush=True)
+    # if _DEBUG: print('...DEBUG... isZeroToOne(' + str(value) + ')'
     if  value is None:
         return None
     if isinstance(value,_X3DField):
@@ -956,14 +911,14 @@ def assertZeroToOne(fieldName, value):
     """
     Utility function to raise X3DTypeError if not isZeroToOne(value)
     """
-    # if _DEBUG: print('...DEBUG... assertZeroToOne(' + str(fieldName) + ', ' + str(value) + ')', flush=True)
+    # if _DEBUG: print('...DEBUG... assertZeroToOne(' + str(fieldName) + ', ' + str(value) + ')'
     assert isZeroToOne(value), str(fieldName) + '=' + str(value) + ' fails assertZeroToOne requirements: value(s) must be in range [0..1]'
 
 def isLessThanEquals(value, maximum):
     """
     Utility function to confirm value(s) less than or equal to maximum.
     """
-    # if True or _DEBUG: print('* debug: isLessThanEquals(' + str(value) + ')', flush=True)
+    # if True or _DEBUG: print('* debug: isLessThanEquals(' + str(value) + ')'
     if  value is None:
         return None
     if isinstance(value, list) and any(isinstance(x, tuple) for x in value):
@@ -985,14 +940,14 @@ def assertLessThanEquals(fieldName, value, maximum):
     """
     Utility function to raise X3DTypeError if not isLessThanEquals(value)
     """
-    # if _DEBUG: print('...DEBUG... assertLessThanEquals(' + str(fieldName) + ', ' + str(value) + ')', flush=True)
+    # if _DEBUG: print('...DEBUG... assertLessThanEquals(' + str(fieldName) + ', ' + str(value) + ')'
     assert isLessThanEquals(value, maximum), fieldName + '=' + str(value) + ' fails assertLessThanEquals maximum=' + str(maximum)
 
 def isLessThan(value, maximum):
     """
     Utility function to confirm value(s) less than maximum.
     """
-    # if True or _DEBUG: print('* debug: isLessThan(' + str(value) + ')', flush=True)
+    # if True or _DEBUG: print('* debug: isLessThan(' + str(value) + ')'
     if  value is None:
         return None
     if isinstance(value, list) and any(isinstance(x, tuple) for x in value):
@@ -1014,7 +969,7 @@ def assertLessThan(fieldName, value, maximum):
     """
     Utility function to raise X3DTypeError if not isLessThan(value)
     """
-    # if _DEBUG: print('...DEBUG... assertLessThan(' + str(fieldName) + ', ' + str(value) + ')', flush=True)
+    # if _DEBUG: print('...DEBUG... assertLessThan(' + str(fieldName) + ', ' + str(value) + ')'
     assert isLessThan(value, maximum), str(fieldName) + '=' + str(value) + ' fails assertLessThan maximum=' + str(maximum)
 
 ######
@@ -1022,7 +977,7 @@ def isGreaterThanEquals(value, minimum):
     """
     Utility function to confirm value(s) less than or equal to minimum.
     """
-    # if True or _DEBUG: print('* debug: isGreaterThanEquals(' + str(value) + ')', flush=True)
+    # if True or _DEBUG: print('* debug: isGreaterThanEquals(' + str(value) + ')'
     if  value is None:
         return None
     if isinstance(value, list) and any(isinstance(x, tuple) for x in value):
@@ -1044,14 +999,14 @@ def assertGreaterThanEquals(fieldName, value, minimum):
     """
     Utility function to raise X3DTypeError if not isGreaterThanEquals(value)
     """
-    # if _DEBUG: print('...DEBUG... assertGreaterThanEquals(' + str(fieldName) + ', ' + str(value) + ')', flush=True)
+    # if _DEBUG: print('...DEBUG... assertGreaterThanEquals(' + str(fieldName) + ', ' + str(value) + ')'
     assert isGreaterThanEquals(value, minimum), str(fieldName) + '=' + str(value) + ' fails assertGreaterThanEquals minimum=' + str(minimum)
 
 def isGreaterThan(value, minimum):
     """
     Utility function to confirm value(s) less than minimum.
     """
-    # if True or _DEBUG: print('* debug: isGreaterThan(' + str(value) + ')', flush=True)
+    # if True or _DEBUG: print('* debug: isGreaterThan(' + str(value) + ')'
     if isinstance(value, list) and any(isinstance(x, tuple) for x in value):
         for each in value:
             for element in each:
@@ -1071,7 +1026,7 @@ def assertGreaterThan(fieldName, value, minimum):
     """
     Utility function to raise X3DTypeError if not isGreaterThan(value)
     """
-    # if _DEBUG: print('...DEBUG... assertGreaterThan(' + str(fieldName) + ', ' + str(value) + ')', flush=True)
+    # if _DEBUG: print('...DEBUG... assertGreaterThan(' + str(fieldName) + ', ' + str(value) + ')'
     assert isGreaterThan(value, minimum), str(fieldName) + '=' + str(value) + ' fails assertGreaterThan minimum=' + str(minimum)
 
 def isBoundingBox(value):
@@ -1080,7 +1035,7 @@ def isBoundingBox(value):
     """
     if value is None:
         return None
-    # if True or _DEBUG: print('* debug: isBoundingBox(' + str(value) + ')', 'isinstance(value, tuple)=' + str(isinstance(value, tuple)), 'len(value)=' + str(len(value)), flush=True)
+    # if True or _DEBUG: print('* debug: isBoundingBox(' + str(value) + ')', 'isinstance(value, tuple)=' + str(isinstance(value, tuple)), 'len(value)=' + str(len(value))
     if isinstance(value, (list, tuple)):
         if len(value) != 3:
             return False
@@ -1093,7 +1048,7 @@ def assertBoundingBox(fieldName, value):
     """
     Utility function to raise X3DTypeError if not isBoundingBox(value)
     """
-    # if True or _DEBUG: print('* debug: assertBoundingBox(' + str(fieldName) + ', ' + str(value) + ')', flush=True)
+    # if True or _DEBUG: print('* debug: assertBoundingBox(' + str(fieldName) + ', ' + str(value) + ')'
     assert isBoundingBox(value), str(fieldName) + '=' + str(value) + ' fails assertBoundingBox requirements: must be (-1, -1, -1) or non-negative 3-tuple'
 ]]></xsl:text>
 
@@ -1151,7 +1106,7 @@ def isValid</xsl:text>
             <xsl:value-of select="$fieldTypeName"/>
             <xsl:text>)=' + str(isinstance(value, </xsl:text>
             <xsl:value-of select="$fieldTypeName"/>
-            <xsl:text>)), flush=True)
+            <xsl:text>)))
     ###        return False # type mismatch!</xsl:text>
             <xsl:text>
     ### if isinstance(value, </xsl:text>
@@ -1278,7 +1233,7 @@ def isValid</xsl:text>
                 <xsl:value-of select="$fieldTypeName"/>
                 <xsl:text>().TUPLE_SIZE() =' + str(</xsl:text>
                         <xsl:value-of select="$fieldTypeName"/>
-                        <xsl:text>().TUPLE_SIZE() ) + ' for value=' + str(value), flush=True)
+                        <xsl:text>().TUPLE_SIZE() ) + ' for value=' + str(value))
     ###         return False
     ###     for element in each:
     ###         if not isinstance(element, </xsl:text>
@@ -1314,7 +1269,7 @@ def isValid</xsl:text>
     ###     height = value[1]
     ###     # numberComponents = value[2]
     ###     if  len(value) != (width * height) + 3: # assumes each value in array has all component values in single integer
-    ###         print('SFImage array length of ' + str(len(value)) + ' does not equal (width=' + str(width)+ ' * height=' + str(height)+ ') + 3) = ' + str(width * height * numberComponents + 3) + ' (numberComponents=' + numberComponents + ')', flush=True)
+    ###         print('SFImage array length of ' + str(len(value)) + ' does not equal (width=' + str(width)+ ' * height=' + str(height)+ ') + 3) = ' + str(width * height * numberComponents + 3) + ' (numberComponents=' + numberComponents + ')'
     ###         return False # SFImage has invalid list length]]></xsl:text>
             </xsl:if>
             <xsl:text>
@@ -1360,7 +1315,7 @@ def assertValid</xsl:text>
     print("debug list commence...")</xsl:text>
                  </xsl:if> -->
             <xsl:text>
-    # if _DEBUG: print('...DEBUG... debug value.__class__=' + str(value.__class__) + ', issubclass(value.__class__, _X3DField)=' + str(issubclass(value.__class__, _X3DField)) + ', super(value.__class__)=' + str(super(value.__class__)), flush=True)
+    # if _DEBUG: print('...DEBUG... debug value.__class__=' + str(value.__class__) + ', issubclass(value.__class__, _X3DField)=' + str(issubclass(value.__class__, _X3DField)) + ', super(value.__class__)=' + str(super(value.__class__))
     # if _DEBUG: print('value=', value, 'str(value)=', str(value))
     ### if isinstance(value, _X3DField) and not isinstance(value, SF</xsl:text>
             <xsl:value-of select="substring($fieldTypeName,3)"/>
@@ -1388,7 +1343,7 @@ def assertValid</xsl:text>
     ###         value = SFInt32(value)
     ###         print('found string for </xsl:text>
                     <xsl:value-of select="$fieldTypeName"/>
-                    <xsl:text>, isinstance(value,list)=' + str(isinstance(value,list)),flush=True)
+                    <xsl:text>, isinstance(value,list)=' + str(isinstance(value,list)))
     ###         return True
     ###     except:
     ###         raise X3DTypeError(str(value)[:100] + ', type=' + str(type(value)) + ' is not a valid int value for SFInt32')</xsl:text>
@@ -1401,7 +1356,7 @@ def assertValid</xsl:text>
                     <xsl:text>(value)
     ###     print('found string for </xsl:text>
                     <xsl:value-of select="$fieldTypeName"/>
-                    <xsl:text>, isinstance(value,list)=' + str(isinstance(value,list)),flush=True)</xsl:text>
+                    <xsl:text>, isinstance(value,list)=' + str(isinstance(value,list)))</xsl:text>
                         </xsl:when>
                     </xsl:choose>
             <!-- SF/MF promotion/demotion -->
@@ -1711,10 +1666,10 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
     """
     Utility function to assert fieldType validity of a field initialization value, otherwise raise X3DTypeError with diagnostic message.
     """
-    # if _DEBUG: print('...DEBUG... assertValidFieldInitializationValue name=' + str(name) + ', fieldType=' + str(fieldType) + ', value=' + str(value)[:100] + ', parent=' + parent, flush=True)
+    # if _DEBUG: print('...DEBUG... assertValidFieldInitializationValue name=' + str(name) + ', fieldType=' + str(fieldType) + ', value=' + str(value)[:100] + ', parent=' + parent
     # note that ExternProtoDeclare field definitions do not have any value
     if name is None:
-        print('* assertValidFieldInitializationValue improper invocation: name=' + str(name) + ', fieldType=' + str(fieldType) + ', value=' + str(value)[:100] + ', parent=' + parent + ', ignored', flush=True)
+        print('* assertValidFieldInitializationValue improper invocation: name=' + str(name) + ', fieldType=' + str(fieldType) + ', value=' + str(value)[:100] + ', parent=' + parent + ', ignored')
         return None # ignore
     if value is None or (not(fieldType == bool) and not value):
         return None # ignore
@@ -1805,7 +1760,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
     elif (fieldType == list) or isinstance(value, list):
         try:
             if isinstance(value[0], tuple):
-                print('*** assertValidFieldInitializationValue TODO validate list fieldType: name=' + str(name) + ', passed fieldType=' + str(fieldType) + ', fieldType(value)=' + str(fieldType(value)) + ', value=' + str(value)[:100] + ', parent=' + parent, flush=True)
+                print('*** assertValidFieldInitializationValue TODO validate list fieldType: name=' + str(name) + ', passed fieldType=' + str(fieldType) + ', fieldType(value)=' + str(fieldType(value)) + ', value=' + str(value)[:100] + ', parent=' + parent)
                 return True # TODO check further
             initialListItemType = fieldType(value[0])
             # https://stackoverflow.com/questions/522563/accessing-the-index-in-for-loops/28072982#28072982
@@ -1816,13 +1771,13 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         except TypeError:
             return False # TODO check further if possible
     elif (fieldType == tuple) or isinstance(value, tuple):
-        print('*** assertValidFieldInitializationValue TODO validate tuple fieldType: name=' + str(name) + ', passed fieldType=' + str(fieldType) + ', fieldType(value)=' + str(fieldType(value)) + ', value=' + str(value)[:100] + ', parent=' + parent, flush=True)
+        print('*** assertValidFieldInitializationValue TODO validate tuple fieldType: name=' + str(name) + ', passed fieldType=' + str(fieldType) + ', fieldType(value)=' + str(fieldType(value)) + ', value=' + str(value)[:100] + ', parent=' + parent)
         return True # TODO check further if possible
 #       initialListItemType = fieldType(value[0])
 #       for index, each in enumerate(value):
 #           assertValidFieldInitializationValue(name + '[' + str(index) + '], fieldType(value[index])', value[index], parent)
     else:
-        print('*** assertValidFieldInitializationValue unknown fieldType: name=' + str(name) + ', passed fieldType=' + str(fieldType) + ', fieldType(value)=' + str(fieldType(value)) + ', value=' + str(value)[:100] + ', parent=' + parent, flush=True)
+        print('*** assertValidFieldInitializationValue unknown fieldType: name=' + str(name) + ', passed fieldType=' + str(fieldType) + ', fieldType(value)=' + str(fieldType(value)) + ', value=' + str(value)[:100] + ', parent=' + parent)
         return False # TODO check further if possible
     return True</xsl:text>
         <xsl:text>&#10;</xsl:text>
@@ -2304,7 +2259,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         if isinstance(value, str):
             try:
                 int(value) # this statement checks but does not set value, may throw exception
-                print('*** string value provided, value=' + str(value) + ', int(value)=' + str(int(value)), flush=True)
+                print('*** string value provided, value=' + str(value) + ', int(value)=' + str(int(value)))
                 value = int(value)
             except ValueError as error:
                 # https://stackoverflow.com/questions/66995878/consider-explicitly-re-raising-using-the-from-keyword-pylint-suggestion
@@ -2318,7 +2273,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         if isinstance(value, str):
             try:
                 float(value) # this statement checks but does not set value, may throw exception
-                print('*** string value provided, value=' + str(value) + ', float(value)=' + str(float(value)), flush=True)
+                print('*** string value provided, value=' + str(value) + ', float(value)=' + str(float(value)))
                 value = float(value)
             except ValueError as error:
                 # https://stackoverflow.com/questions/66995878/consider-explicitly-re-raising-using-the-from-keyword-pylint-suggestion
@@ -2349,7 +2304,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                     _newValue.append(SF</xsl:text>
                     <xsl:value-of select="substring($fieldTypeName,3)"/>
                     <xsl:text>(each).value)
-                # if _DEBUG: print('...DEBUG... assign list, value=' + str(value), ', type=' + str(type(value)), ', _newValue=' + str(_newValue),flush=True)
+                # if _DEBUG: print('...DEBUG... assign list, value=' + str(value), ', type=' + str(type(value)), ', _newValue=' + str(_newValue)
                 value = _newValue
         elif isinstance(value, str):
             value = [ </xsl:text>
@@ -2399,7 +2354,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
     def append(self, value=None):
         """ Add to existing value list, first ensuring that a correctly typed value is applied. """
         if  not value is None:
-            # if _DEBUG: print('...DEBUG... append to list, value=' + str(self.__value), ', type=' + str(type(self.__value)), ', value=' + str(value),flush=True)
+            # if _DEBUG: print('...DEBUG... append to list, value=' + str(self.__value), ', type=' + str(type(self.__value)), ', value=' + str(value)
             if isinstance(value,SF</xsl:text>
                 <xsl:value-of select="substring($fieldTypeName,3)"/>
                 <xsl:text>):
@@ -2451,7 +2406,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         if not isinstance(self.__value,list):
             print('*** x3d.py internal error, </xsl:text>
                 <xsl:value-of select="$fieldTypeName"/>
-        <xsl:text> self.__value type=' + str(type(self.__value)) + ' is not a list', flush=True)
+        <xsl:text> self.__value type=' + str(type(self.__value)) + ' is not a list')
         return len(self.__value) > 0
     def __len__(self):
         return len(self.__value)</xsl:text>
@@ -2721,7 +2676,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         self.metadata = metadata
         # if _DEBUG: print('...DEBUG... in </xsl:text>
                 <xsl:value-of select="@name"/>
-                <xsl:text> __init__(' + str(DEF) + ',' + str(USE) + ',' + str(class_) + ',' + str(id_) + ',' + str(style) + ',' + str(metadata) + ',' + str(IS) + ')', flush=True)
+                <xsl:text> __init__(' + str(DEF) + ',' + str(USE) + ',' + str(class_) + ',' + str(id_) + ',' + str(style) + ',' + str(metadata) + ',' + str(IS) + ')')
     @property # getter - - - - - - - - - -
     def DEF(self):
         """ Unique ID name for this node, referenceable by other X3D nodes. """
@@ -2813,14 +2768,14 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                 type_ = each[2]
                 accessType = each[3]
                 value = getattr(self, name)
-                # if _DEBUG: print('gettattr(self, ' + str(name) + ') value="' + str(value)[:100] + '" for FIELD_DECLARATIONS() ' + str(each) + ')', flush=True)
+                # if _DEBUG: print('gettattr(self, ' + str(name) + ') value="' + str(value)[:100] + '" for FIELD_DECLARATIONS() ' + str(each) + ')'
                 if value != default:
                     # consider whether indentation is useful; probably not
                     # print("\n\t")
                     if  isinstance(value, list): # avoid X3DTypeError if value is not iterable
                         result += str(name) + '=['
                         for each in value:
-                            # if _DEBUG: print('...DEBUG... X3DNode debug: str(each)=' + str(each), flush=True)
+                            # if _DEBUG: print('...DEBUG... X3DNode debug: str(each)=' + str(each)
                             result += str(each) + ', '
                         result = result.rstrip(', ')
                         result += '],'
@@ -2864,7 +2819,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                 <xsl:value-of select="local-name()"/>
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="@name"/>
-                <xsl:text> __init__ calling super.__init__(' + str(DEF) + ',' + str(USE) + ',' + str(class_) + ',' + str(id_) + ',' + str(style_) + ',' + str(metadata) + ',' + str(IS) + ')', flush=True)
+                <xsl:text> __init__ calling super.__init__(' + str(DEF) + ',' + str(USE) + ',' + str(class_) + ',' + str(id_) + ',' + str(style_) + ',' + str(metadata) + ',' + str(IS) + ')')
         super().__init__(DEF, USE, class_, id_, style_, IS, metadata) # fields for _X3DNode only</xsl:text>
                 -->
             </xsl:when>
@@ -3334,7 +3289,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                 <xsl:value-of select="@name"/>
                 <!-- discussion to avoid use of super(), especially when explicit superclass is known - but self can become problematic.
                      see Mark Lutz, Learning Python, 5th edition, pp. 1076-1086 -->
-                <xsl:text> __init__ calling super.__init__(' + str(DEF) + ',' + str(USE) + ',' + str(class_) + ',' + str(id_) + ',' + str(style_) + ',' + str(metadata) + ',' + str(IS) + ')', flush=True)
+                <xsl:text> __init__ calling super.__init__(' + str(DEF) + ',' + str(USE) + ',' + str(class_) + ',' + str(id_) + ',' + str(style_) + ',' + str(metadata) + ',' + str(IS) + ')')
         super().__init__(DEF, USE, class_, id_, style_, IS, metadata) # fields for _X3DNode only</xsl:text>
             </xsl:when>
             <xsl:when test="(local-name() = 'Statement')">
@@ -3345,7 +3300,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                 <xsl:value-of select="local-name()"/>
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="@name"/>
-                <xsl:text> __init__ calling super.__init__(' + str(class_) + ',' + str(id_) + ',' + str(style_) +  + ')', flush=True)
+                <xsl:text> __init__ calling super.__init__(' + str(class_) + ',' + str(id_) + ',' + str(style_) +  + ')')
         super().__init__(class_, id_, style_) # fields for _X3DStatement only</xsl:text>
             </xsl:when>
         </xsl:choose>
@@ -3888,7 +3843,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         if self.Scene and self.Scene.hasChild():
             result += str(self.Scene.XML(indentLevel=indentLevel+1, syntax=syntax))
         result += '</X3D>' + '\n'
-#       print('XML serialization complete.', flush=True)
+#       print('XML serialization complete.'
         return result
     # output function - - - - - - - - - -
     def XMLvalidate(self,otherX3dVersion=""):
@@ -4214,7 +4169,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
             if self.__children: # walk each child in list, if any (avoid empty list recursion)
                 ## print('* </xsl:text>
                         <xsl:value-of select="$elementName"/>
-                        <xsl:text> found self.children, now invoking XML(' + str(indentLevel+1) + ')', flush=True)
+                        <xsl:text> found self.children, now invoking XML(' + str(indentLevel+1) + ')')
                 # order is significant for component, unit, meta statements
                 if self.children: # walk each child in list, if any (avoid empty list recursion)
                     for each in self.children:
@@ -4270,7 +4225,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                         <xsl:value-of select="$fieldName"/>
                         <xsl:text>)=' + str(len(self.</xsl:text>
                         <xsl:value-of select="$fieldName"/>
-                        <xsl:text>)) + ', now invoking XML(' + str(indentLevel+1) + ')', flush=True)
+                        <xsl:text>)) + ', now invoking XML(' + str(indentLevel+1) + ')')
             if self.</xsl:text>
                         <xsl:value-of select="$fieldName"/>
                         <xsl:text>: # walk each child in list, if any (avoid empty list recursion)
@@ -4306,7 +4261,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
             result += indent + '</]]></xsl:text><!-- closing tag -->
                 <xsl:value-of select="$elementName"/>
                 <xsl:text disable-output-escaping="yes"><![CDATA[>' + '\n'
-#       print('XML serialization complete.', flush=True)
+#       print('XML serialization complete.'
         return result]]></xsl:text>
             </xsl:otherwise>
         </xsl:choose>
@@ -4333,7 +4288,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         if self.Scene and self.Scene.hasChild():
             result += str(self.Scene.JSON(indentLevel=indentLevel+1, syntax=syntax))
         result += '}' + '\n'
-#       print('JSON serialization complete.', flush=True)
+#       print('JSON serialization complete.'
         return result</xsl:text>
             </xsl:when>
             <xsl:otherwise> <!-- non-X3D (i.e. non-root) JSON() -->
@@ -4512,7 +4467,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
             if self.__children: # walk each child in list, if any
                 ## print('* </xsl:text>
                         <xsl:value-of select="$elementName"/>
-                        <xsl:text> found self.children, now invoking JSON(' + str(indentLevel+1) + ')', flush=True)
+                        <xsl:text> found self.children, now invoking JSON(' + str(indentLevel+1) + ')')
                 # order is significant for component, unit, meta statements
                 if self.children: # walk each child in list, if any (avoid empty list recursion)
                     for each in self.children:
@@ -4566,7 +4521,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                         <xsl:value-of select="$fieldName"/>
                         <xsl:text>)=' + str(len(self.</xsl:text>
                         <xsl:value-of select="$fieldName"/>
-                        <xsl:text>)) + ', now invoking JSON(' + str(indentLevel+1) + ')', flush=True)
+                        <xsl:text>)) + ', now invoking JSON(' + str(indentLevel+1) + ')')
             if self.</xsl:text>
                         <xsl:value-of select="$fieldName"/>
                         <xsl:text>: # walk each child in list, if any (avoid empty list recursion)
@@ -4585,7 +4540,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
             result += indent + '}' ### here?</xsl:text>
             <!--<xsl:text> + ' # </xsl:text><xsl:value-of select="$elementName"/><xsl:text> element with children complete '</xsl:text> debug -->
                 <xsl:text> + '\n'
-#       print('JSON serialization complete.', flush=True)
+#       print('JSON serialization complete.'
         return result</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
@@ -4642,7 +4597,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         if self.children: # walk each child in list, if any (avoid empty list recursion)
             ## print('* </xsl:text>
                         <xsl:value-of select="$elementName"/>
-                        <xsl:text> found self.children, now invoking VRML(' + str(indentLevel+1) + ', ' + VRML97 + ')', flush=True)
+                        <xsl:text> found self.children, now invoking VRML(' + str(indentLevel+1) + ', ' + VRML97 + ')')
             # order is significant for component, unit, meta statements
             for each in self.children:
                 # TODO check order of output: component unit meta
@@ -4915,7 +4870,7 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         </xsl:choose>
 
         <xsl:text>
-#       print('VRML serialization complete.', flush=True)
+#       print('VRML serialization complete.'
         return result</xsl:text>
         
         <xsl:text>&#10;</xsl:text>
