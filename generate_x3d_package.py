@@ -43,36 +43,3 @@ if res.returncode != 0:
     sys.exit(res.returncode)
     
 logger.debug("XSLT completed")
-
-# now apply a change to the message printed
-MODULE_PATH=os.path.join(PACKAGE_DIR,"x3d.py")
-
-with open(MODULE_PATH,"r") as inp:
-    module_lines = inp.readlines()
-    
-logger.debug("read %i module lines" % len(module_lines))
-
-try:
-    os.remove( MODULE_PATH )
-except Exception as exc:
-    logger.error("Failed as removing original %s" % MODULE_PATH)
-    sys.exit(1)
-    
-
-replace_pattern=re.compile(r"x3d.py package\s+(.*)\s+loaded, have fun with X3D Graphics!")
-replacement_text = r"x3d.py package \1 modified by x3dpy_containerfield loaded, have fun with X3D Graphics!"
-
-try:
-    with open(MODULE_PATH,"w") as outp:
-        for line in module_lines:
-            #outp.write( replace_pattern.sub(replacement_text ))
-            outp.write( replace_pattern.sub( replacement_text, line ))
-except Exception as exc:
-    logger.error("replacement failed: %s" % str(exc))
-    sys.exit(1)
-
-logger.info("x3d package generation completed")
-sys.exit(0)
-
-
-
