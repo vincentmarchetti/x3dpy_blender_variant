@@ -454,15 +454,7 @@ class _X3DStatement:
     def FIELD_DECLARATIONS(cls):
         """ Field declarations provided for this node: name, defaultValue, type, accessType, inheritedFrom """
         return []
-    @classmethod
-    def SPECIFICATION_URL(cls):
-        """ Extensible 3D (X3D) Graphics International Standard governs the functional architecture for all file formats and programming languages. 
-            https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/components/core.html#AbstractX3DStructure """
-        return 'https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/components/core.html#AbstractX3DStructure'
-    @classmethod
-    def TOOLTIP_URL(cls):
-        """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. https://www.web3d.org/x3d/tooltips/X3dTooltips.html """
-        return 'https://www.web3d.org/x3d/tooltips/X3dTooltips.html'
+
     def __init__(self, class_="", id_="", style_=""):
         self.class_ = class_
         self.id_ = id_
@@ -550,16 +542,6 @@ class Comment(_X3DStatement):
     def name(self):
         # of possible internal use when supporting Comments class for persistent comments
         return '_Comment' # "Comment" is not a reserved word in X3D, might be a prototype name
-    @classmethod
-    def SPECIFICATION_URL(cls):
-        """ Extensible 3D (X3D) Graphics International Standard governs the functional architecture for all file formats and programming languages. 
-            https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/components/core.html#Organization """
-        return 'https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/components/core.html#Organization'
-    @classmethod
-    def TOOLTIP_URL(cls):
-        """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. https://www.web3d.org/x3d/tooltips/X3dTooltips.html """
-        return 'https://www.web3d.org/x3d/tooltips/X3dTooltips.html'
-    # immutable constant functions have getter but no setter - - - - - - - - - -
     @classmethod
     def DEFAULT_VALUE(cls):
         """ Default value for comments is empty string """
