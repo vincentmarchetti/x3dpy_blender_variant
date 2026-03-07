@@ -285,18 +285,9 @@ class _X3DField:
     def NAME(cls):
         """ Name of this X3D Field class: _X3DField. Prepended underscore to field name since it is abstract. """
         return '_X3DField'
-    @classmethod
-    def SPECIFICATION_URL(cls):
-        """ Extensible 3D (X3D) Graphics International Standard governs the functional architecture for all file formats and programming languages. </xsl:text>
-        <xsl:text>https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/fieldTypes.html#X3DField</xsl:text>
-        <xsl:text> """
-        return 'https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/fieldTypes.html#X3DField'
-    @classmethod
-    def TOOLTIP_URL(cls):
-        """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. </xsl:text>
-        <xsl:text>https://www.web3d.org/x3d/tooltips/X3dTooltips.html#FieldTypesTable</xsl:text>
-        <xsl:text> """
-        return 'https://www.web3d.org/x3d/tooltips/X3dTooltips.html#FieldTypesTable'
+</xsl:text>
+
+<xsl:text>
     @property # getter - - - - - - - - - -
     def value(self):
         """ Provide value of this field type. """
@@ -351,17 +342,6 @@ class AccessType(_X3DField):
     """
     accessType determines whether a field corresponds to event input, event output, or persistent state information. Events are strictly typed values with a corresponding timestamp. ROUTE connections must match accessType between source field and target field.
     """
-    @classmethod
-    def SPECIFICATION_URL(cls):
-        """ Extensible 3D (X3D) Graphics International Standard governs the functional architecture for all file formats and programming languages. 
-            https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/concepts.html#FieldSemantics """
-        return 'https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/concepts.html#FieldSemantics'
-    @classmethod
-    def TOOLTIP_URL(cls):
-        """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. </xsl:text>
-        <xsl:text>https://www.web3d.org/x3d/tooltips/X3dTooltips.html#accessType</xsl:text>
-        <xsl:text> """
-        return 'https://www.web3d.org/x3d/tooltips/X3dTooltips.html#accessType'
     @staticmethod
     def initializeOnly():
         """ initializeOnly: can be initialized, but cannot send or receive events. This is usually the case for fields that are considered too computationally expensive to change at run time. """
@@ -388,18 +368,8 @@ class FieldType(_X3DField):
     Each field in each node (i.e. each XML attribute) has a strictly defined data type.
     Multiple data types are provided for boolean, integer, floating-point and string values.
     X3D is a strongly typed language, meaning that all data must strictly conform to these data types in order for a scene to be correct.
-    """
-    @classmethod
-    def SPECIFICATION_URL(cls):
-        """ Extensible 3D (X3D) Graphics International Standard governs the functional architecture for all file formats and programming languages. 
-            https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/fieldsDef.html """
-        return 'https://www.web3d.org/specifications/X3Dv4Draft/ISO-IEC19775-1v4.1-CD/Part01/fieldsDef.html'
-    @classmethod
-    def TOOLTIP_URL(cls):
-        """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. </xsl:text>
-        <xsl:text>https://www.web3d.org/x3d/tooltips/X3dTooltips.html#type</xsl:text>
-        <xsl:text> """
-        return 'https://www.web3d.org/x3d/tooltips/X3dTooltips.html#type'
+    """</xsl:text>
+<xsl:text>
     # string constants listing each allowed type</xsl:text>
         <xsl:for-each select="//FieldTypes/FieldType">
             <xsl:text>
@@ -2776,38 +2746,20 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         <xsl:value-of select="$elementName"/>
         <xsl:text>'</xsl:text>
         
-        <!-- TODO is there a suggested name or form for documentation url? -->
-        <xsl:text>
-    @classmethod
-    def SPECIFICATION_URL(cls):
-        """ Extensible 3D (X3D) Graphics International Standard governs the functional architecture for all file formats and programming languages. </xsl:text>
-        <xsl:value-of select="InterfaceDefinition/@specificationUrl"/>
-        <xsl:text> """
-        return '</xsl:text>
-        <xsl:value-of select="InterfaceDefinition/@specificationUrl"/>
-        <xsl:text>'
+<xsl:text>
     @classmethod
     def CONTAINERFIELD_DEFAULT(cls):
         """ Default value for containerField attribute in XML encoding """
         return '</xsl:text>
         <xsl:value-of select="InterfaceDefinition/containerField/@default"/>
         <xsl:text>'</xsl:text>
-        <xsl:text>
-    @classmethod
-    def TOOLTIP_URL(cls):
-        """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. </xsl:text>
-        <xsl:text>https://www.web3d.org/x3d/tooltips/X3dTooltips.html#</xsl:text>
-        <xsl:value-of select="$elementName"/>
-        <xsl:text> """
-        return 'https://www.web3d.org/x3d/tooltips/X3dTooltips.html#</xsl:text>
-        <xsl:value-of select="$elementName"/>
-        <xsl:text>'</xsl:text>
+
         
         <!-- Special constants -->
         <xsl:choose>
             <xsl:when test="($elementName = 'X3D')">
                 <!-- special constant declarations -->
-                <xsl:text disable-output-escaping="yes"><![CDATA[
+<xsl:text disable-output-escaping="yes"><![CDATA[
     XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
     XML_DOCTYPE_X3D_3_0 = '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "https://www.web3d.org/specifications/x3d-3.0.dtd">'
     XML_DOCTYPE_X3D_3_1 = '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.1//EN" "https://www.web3d.org/specifications/x3d-3.1.dtd">'
