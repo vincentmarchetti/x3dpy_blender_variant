@@ -42091,7 +42091,6 @@
             <field name="level"
                    type="SFInt32"
                    accessType="inputOutput"
-                   default="1"
                    minInclusive="1"
                    maxInclusive="5"
                    use="required"
