@@ -2761,136 +2761,14 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
                 <!-- special constant declarations -->
 <xsl:text disable-output-escaping="yes"><![CDATA[
     XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
-    XML_DOCTYPE_X3D_3_0 = '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "https://www.web3d.org/specifications/x3d-3.0.dtd">'
-    XML_DOCTYPE_X3D_3_1 = '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.1//EN" "https://www.web3d.org/specifications/x3d-3.1.dtd">'
-    XML_DOCTYPE_X3D_3_2 = '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" "https://www.web3d.org/specifications/x3d-3.2.dtd">'
-    XML_DOCTYPE_X3D_3_3 = '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.3//EN" "https://www.web3d.org/specifications/x3d-3.3.dtd">'
     XML_DOCTYPE_X3D_4_0 = '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 4.0//EN" "https://www.web3d.org/specifications/x3d-4.0.dtd">'
-    XML_DOCTYPE_X3D_4_1 = '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 4.1//EN" "https://www.web3d.org/specifications/x3d-4.1.dtd">'
-    X3D_XML_SCHEMA_ATTRIBUTES_3_0 = "xmlns:xsd='https://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='https://www.web3d.org/specifications/x3d-3.0.xsd'"
-    X3D_XML_SCHEMA_ATTRIBUTES_3_1 = "xmlns:xsd='https://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='https://www.web3d.org/specifications/x3d-3.1.xsd'"
-    X3D_XML_SCHEMA_ATTRIBUTES_3_2 = "xmlns:xsd='https://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='https://www.web3d.org/specifications/x3d-3.2.xsd'"
-    X3D_XML_SCHEMA_ATTRIBUTES_3_3 = "xmlns:xsd='https://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='https://www.web3d.org/specifications/x3d-3.3.xsd'"
     X3D_XML_SCHEMA_ATTRIBUTES_4_0 = "xmlns:xsd='https://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='https://www.web3d.org/specifications/x3d-4.0.xsd'"
-    X3D_XML_SCHEMA_ATTRIBUTES_4_1 = "xmlns:xsd='https://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='https://www.web3d.org/specifications/x3d-4.1.xsd'"
-    VRML97_HEADER = '#VRML V2.0 utf8'
-    CLASSIC_VRML_HEADER_PREFIX = '#VRML V' # followed by X3D version number
-    CLASSIC_VRML_HEADER_SUFFIX = ' utf8'
+]]></xsl:text>
 
-    # TODO confirm JSON Schema header
-    JSON_HEADER = '''{
-    "X3D":,
-    {
-        "encoding":"UTF-8",
-        "$id":   "https://www.web3d.org/specifications/x3d-4.0-JSONSchema.json",
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-'''
-
-    X3D_XML_VALIDATOR  = "https://savage.nps.edu/X3dValidator"
-    X3D_JSON_VALIDATOR = "https://coderextreme.net/X3DJSONLD/src/main/html/validator.html"
-
-    X3DOM_HEADER = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<!-- =================================================================== -->
-<!-- embedded X3D scene appears after html/head/script and style entries -->
-<!-- =================================================================== -->
-<html>
-   <head>
-      <title></title>
-      <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge"/>
-      <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!-- Numbered X3DOM release versions: https://doc.x3dom.org/download -->
-<!-- Developer X3DOM release version: https://doc.x3dom.org/download/dev -->
-<link rel="stylesheet"
-            type="text/css"
-            href="https://x3dom.org/release/x3dom.css"/>
-      <script type="text/javascript" src="https://x3dom.org/release/x3dom-full.js"/>
-      <meta name="warning"
-            content="Webfonts must be loaded prior to using Text node in X3D scene... see https://x3dom.org/x3dom/example/x3dom_text.html"/>
-      <!-- X3DOM needs Web Fonts when an X3D Text node is included -->
-      <!-- adapted from https://x3dom.org/x3dom/example/x3dom_text.html and https://web.mit.edu/jmorzins/www/fonts.html -->
-      <style type="text/css">
-/* ============================================================================= */
-@font-face {
-  font-family: 'SERIF'; /* default original */
-  font-style: normal;
-  font-weight: 700;
-  src: local('Roman'), url('Roman.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'SERIF'; /* default alternate */
-  font-style: normal;
-  font-weight: 700;
-  src: local('Times New Roman'), local('TimesNewRoman'), url('Times New Roman.ttf') format('truetype');
-}
-/* ============================================================================= */
-@font-face {
-  font-family: 'SANS'; /* default original */
-  font-style: normal;
-  font-weight: 400;
-  src: local('Arial'), url('Arial.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'SANS'; /* default alternate */
-  font-style: normal;
-  font-weight: 400;
-  src: local('Helvetica'), url('Helvetica.ttf') format('truetype');
-}
-/* ============================================================================= */
-@font-face {
-  font-family: 'TYPEWRITER'; /* default original */
-  font-style: normal;
-  font-weight: 900;
-  src: local('Courier'), url('Courier.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'TYPEWRITER'; /* default alternate */
-  font-style: normal;
-  font-weight: 900;
-  src: local('Courier New'), url('Courier New.ttf') format('truetype');
-}
-/* ============================================================================= */
-</style>
-   </head>
-   <body>"""
-    X3DOM_FOOTER = """
-   </body>
-</html>
-"""]]></xsl:text>
             </xsl:when>
         </xsl:choose>
     
         <xsl:variable name="allFields"    select="InterfaceDefinition/field[(@accessType = 'initializeOnly') or (@accessType = 'inputOutput')]"/>
-        <!-- TODO sometimes need to avoid DEF, USE, IS, metadata, class_
-        <xsl:variable name="localFields"  select="InterfaceDefinition/field[(@accessType = 'initializeOnly') or (@accessType = 'inputOutput')]
-                                                        [not(@name = 'DEF') and not(@name = 'USE') and not(@name = 'IS') and not(@name = 'metadata') and not(@name = 'class_')]"/>
-        -->
-        <!--
-        <xsl:variable name="simpleFields" select="InterfaceDefinition/field[(@accessType = 'initializeOnly') or (@accessType = 'inputOutput')][not(contains(@type,'Node'))]"/>
-        <xsl:variable name="nodeFields"   select="InterfaceDefinition/field[(@accessType = 'initializeOnly') or (@accessType = 'inputOutput')][   (contains(@type,'Node'))]"/>
-        -->
-        <!-- special case, treat component/unit/meta as children (same as Scene) but select fails mysteriously
-        <xsl:variable name="allFields">
-            <xsl:choose>
-                <xsl:when test="($elementName = 'head')">
-                    <xsl:value-of select="//Statement[@name='Scene']/InterfaceDefinition/field[(@accessType = 'initializeOnly') or (@accessType = 'inputOutput')]"/>
-                </xsl:when>
-            <xsl:choose>
-                    <xsl:value-of select="InterfaceDefinition/field[(@accessType = 'initializeOnly') or (@accessType = 'inputOutput')]"/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable> -->
-        <!-- debug
-        <xsl:message>
-            <xsl:text>*** $elementName=</xsl:text>
-            <xsl:value-of select="$elementName"/>
-            <xsl:text>, count($allFields)=</xsl:text>
-            <xsl:value-of select="count($allFields)"/>
-            <xsl:text>, count($localFields)=</xsl:text>
-            <xsl:value-of select="count($localFields)"/>
-        </xsl:message> -->
-        
         <!-- FIELD_DECLARATIONS() -->
         <xsl:choose>
             <xsl:when test="($elementName = 'head')">
