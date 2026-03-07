@@ -1794,26 +1794,6 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         return '</xsl:text>
         <xsl:value-of select="$fieldTypeName"/>
         <xsl:text>'</xsl:text>
-        
-        <!-- TODO is there a suggested name or form for documentation url? -->
-        <xsl:text>
-    @classmethod
-    def SPECIFICATION_URL(cls):
-        """ Extensible 3D (X3D) Graphics International Standard governs the functional architecture for all file formats and programming languages. </xsl:text>
-        <xsl:value-of select="InterfaceDefinition/@specificationUrl"/>
-        <xsl:text> """
-        return '</xsl:text>
-        <xsl:value-of select="InterfaceDefinition/@specificationUrl"/>
-        <xsl:text>'
-    @classmethod
-    def TOOLTIP_URL(cls):
-        """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. </xsl:text>
-        <xsl:text>https://www.web3d.org/x3d/tooltips/X3dTooltips.html#</xsl:text>
-        <xsl:value-of select="$fieldTypeName"/>
-        <xsl:text>"""
-        return 'https://www.web3d.org/x3d/tooltips/X3dTooltips.html#</xsl:text>
-        <xsl:value-of select="$fieldTypeName"/>
-        <xsl:text>'</xsl:text>
     
         <xsl:text>
     @classmethod
@@ -2467,26 +2447,12 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         <xsl:value-of select="@name"/>
         <xsl:text>'</xsl:text>
         
-        <!-- TODO is there a suggested name or form for documentation url? -->
-        <xsl:text>
-    @classmethod
-    def SPECIFICATION_URL(cls):
-        """ Extensible 3D (X3D) Graphics International Standard governs the functional architecture for all file formats and programming languages. </xsl:text>
-        <xsl:value-of select="InterfaceDefinition/@specificationUrl"/>
-        <xsl:text> """
-        return '</xsl:text>
-        <xsl:value-of select="InterfaceDefinition/@specificationUrl"/>
-        <xsl:text>'</xsl:text>
+        
         
         <xsl:choose>
             <xsl:when test="(@name = 'X3DNode')">
-            <xsl:text>
-    @classmethod
-    def TOOLTIP_URL(cls):
-        """ X3D Tooltips provide authoring tips, hints and warnings for each node and field in X3D. </xsl:text>
-        <xsl:text>https://www.web3d.org/x3d/tooltips/X3dTooltips.html</xsl:text>
-        <xsl:text> """
-        return 'https://www.web3d.org/x3d/tooltips/X3dTooltips.html'
+        
+<xsl:text>
     # Field declarations provided for this node are performed by implementing node
     def __init__(self, DEF="", USE="", class_="", id_="", style_="", IS=None, metadata=None):
         self.DEF = DEF
@@ -2614,40 +2580,11 @@ def assertValidFieldInitializationValue(name, fieldType, value, parent=''):
         return self.__repl__().strip() # </xsl:text>
                 <xsl:value-of select="@name"/>
             </xsl:when>
-<!-- __str__ not needed if __repl__ is satisfactory
-    def __str__(self):
-        result = self.NAME() + ' '
-        if self.FIELD_DECLARATIONS():
-          for each in self.FIELD_DECLARATIONS():
-            name= each[0]
-            default = each[1]
-            value= getattr(self, name)
-            if value != default:
-                if   isinstance(value, str) and "'" in value:
-                    result += str(name) + '=' + '"' + str(value)[:100] + '"' + ' '
-                elif isinstance(value, str):
-                    result += str(name) + '=' + "'" + str(value)[:100] + "'" + ' '
-                else:
-                    result += str(name) + '='       + str(value)[:100]       + ' '
-        return result.strip()
--->
+
             <xsl:when test="(local-name() = 'AbstractNodeType') or (@name = 'X3DMetadataObject')">
-                <!-- discussion to avoid use of super(), especially when explicit superclass is known - but self can become problematic.
-                     see Mark Lutz, Learning Python, 5th edition, pp. 1076-1086 -->
-                <!-- __init__() of the superclass is called automatically, so this block is not need
-                <xsl:text>
-    def __init__(self, DEF, USE, class_, id_, style_, IS, metadata):
-        # if _DEBUG: print('...DEBUG... in </xsl:text>
-                <xsl:value-of select="local-name()"/>
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="@name"/>
-                <xsl:text> __init__ calling super.__init__(' + str(DEF) + ',' + str(USE) + ',' + str(class_) + ',' + str(id_) + ',' + str(style_) + ',' + str(metadata) + ',' + str(IS) + ')')
-        super().__init__(DEF, USE, class_, id_, style_, IS, metadata) # fields for _X3DNode only</xsl:text>
-                -->
             </xsl:when>
         </xsl:choose>
 
-        <xsl:text>&#10;</xsl:text>
         <xsl:text>&#10;</xsl:text>
         
     </xsl:template>
